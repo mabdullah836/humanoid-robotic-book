@@ -1,0 +1,315 @@
+---
+title: Module 3 - NVIDIA Isaac Sim
+slug: /module-3-nvidia-isaac
+sidebar_position: 5
+---
+
+# Module 3: NVIDIA Isaac Sim (Weeks 8-10)
+
+## Overview
+
+This module introduces NVIDIA Isaac Sim, a comprehensive robotics simulation application built on the NVIDIA Omniverse platform. You'll learn to create high-fidelity simulations, leverage GPU-accelerated physics, and prepare robots for AI training using domain randomization techniques.
+
+## Learning Objectives
+
+By the end of this module, you will be able to:
+- Install and configure NVIDIA Isaac Sim for robotics applications
+- Create high-fidelity simulation environments with realistic physics
+- Implement domain randomization techniques for robust AI training
+- Generate synthetic data for perception and control tasks
+- Optimize simulation performance using GPU acceleration
+- Integrate Isaac Sim with real-world robotics workflows
+
+## Module Structure
+
+### Week 8: Isaac Sim Fundamentals
+- Isaac Sim installation and system requirements
+- Basic scene setup and robot import
+- Omniverse platform concepts
+- Extension system and customization
+
+### Week 9: Advanced Simulation and Domain Randomization
+- Domain randomization techniques and implementation
+- Synthetic data generation for AI training
+- Advanced sensor modeling and simulation
+- Physics optimization and performance tuning
+
+### Week 10: GPU-Accelerated Simulation and Real-World Integration
+- Leveraging GPU acceleration for physics simulation
+- Integration with ROS 2 and real-world robotics
+- Performance optimization strategies
+- Deployment considerations and best practices
+
+## Week 8: Isaac Sim Fundamentals
+
+### Introduction to NVIDIA Isaac Sim
+
+NVIDIA Isaac Sim is a robotics simulation application built on the NVIDIA Omniverse platform. It provides high-fidelity simulation capabilities specifically designed for robotics applications, including:
+- Physically accurate simulation with GPU-accelerated physics
+- High-quality rendering for synthetic data generation
+- Integration with NVIDIA's AI and robotics frameworks
+- Support for domain randomization and synthetic data generation
+
+### System Requirements
+
+Isaac Sim has significant hardware requirements due to its high-fidelity rendering and physics simulation:
+- **GPU**: NVIDIA RTX GPU with CUDA support (RTX 3080 or better recommended)
+- **VRAM**: 8GB or more recommended
+- **CPU**: Multi-core processor (8+ cores recommended)
+- **RAM**: 32GB or more recommended
+- **OS**: Ubuntu 20.04/22.04 LTS or Windows 10/11
+
+### Installation Process
+
+1. Install NVIDIA Omniverse Launcher from the NVIDIA Developer website
+2. Install Isaac Sim through the Omniverse Launcher
+3. Ensure CUDA and appropriate GPU drivers are installed
+4. Verify system compatibility and performance
+
+### Basic Concepts in Isaac Sim
+
+- **Worlds**: Simulation environments containing robots, objects, and physics properties
+- **Actors**: Physical objects in the simulation with collision properties
+- **Rigid Bodies**: Objects that participate in physics simulation
+- **Articulations**: Jointed systems like robots with multiple connected parts
+- **Sensors**: Virtual sensors that generate data similar to real sensors
+
+### Python API for Isaac Sim
+
+Isaac Sim provides a comprehensive Python API for programmatic control:
+
+```python
+import omni
+import carb
+from omni.isaac.core import World
+from omni.isaac.core.utils.stage import add_reference_to_stage
+from omni.isaac.core.utils.nucleus import get_assets_root_path
+
+# Create a world instance
+world = World(stage_units_in_meters=1.0)
+
+# Add a robot to the simulation
+assets_root_path = get_assets_root_path()
+if assets_root_path is not None:
+    add_reference_to_stage(
+        usd_path=assets_root_path + "/Isaac/Robots/Franka/franka.usd",
+        prim_path="/World/Franka"
+    )
+
+# Reset and step the simulation
+world.reset()
+for i in range(100):
+    world.step(render=True)
+```
+
+### Robot Import and Configuration
+
+Isaac Sim supports importing robots in various formats, including USD (Universal Scene Description) and URDF (with conversion):
+
+```python
+from omni.isaac.core.utils.nucleus import get_assets_root_path
+from omni.isaac.core.utils.stage import add_reference_to_stage
+from omni.isaac.core.robots import Robot
+
+# Import a robot from the NVIDIA assets library
+assets_root_path = get_assets_root_path()
+if assets_root_path is not None:
+    # Add robot to stage
+    add_reference_to_stage(
+        usd_path=assets_root_path + "/Isaac/Robots/Carter/carter_model.usd",
+        prim_path="/World/Carter"
+    )
+
+    # Create robot object for control
+    robot = Robot(prim_path="/World/Carter", name="carter_bot")
+```
+
+## Week 9: Advanced Simulation and Domain Randomization
+
+### Domain Randomization
+
+Domain randomization is a technique used to train robust AI models by randomizing various aspects of the simulation environment. This helps bridge the sim-to-real gap by exposing the AI to diverse conditions during training.
+
+Key aspects to randomize:
+- Lighting conditions and colors
+- Object textures and materials
+- Physical properties (friction, mass)
+- Environmental parameters (gravity, noise)
+- Camera parameters (intrinsics, extrinsics)
+
+```python
+import numpy as np
+from omni.isaac.core.materials import VisualMaterial
+from omni.isaac.core.utils.prims import get_prim_at_path
+
+# Randomize material properties
+def randomize_material(prim_path):
+    material = get_prim_at_path(prim_path)
+    # Randomize color
+    color = np.random.uniform(0, 1, 3)
+    material.GetAttribute("rgb").Set(color)
+```
+
+### Synthetic Data Generation
+
+Isaac Sim excels at generating synthetic training data for computer vision and perception tasks:
+
+- **RGB Images**: High-quality rendered images
+- **Depth Maps**: Accurate depth information
+- **Semantic Segmentation**: Pixel-level object classification
+- **Instance Segmentation**: Object instance identification
+- **Bounding Boxes**: 2D and 3D bounding box annotations
+
+### Advanced Sensor Simulation
+
+Isaac Sim provides sophisticated sensor simulation capabilities:
+
+```python
+from omni.isaac.sensor import Camera
+import numpy as np
+
+# Create a camera sensor
+camera = Camera(
+    prim_path="/World/Camera",
+    frequency=20,
+    resolution=(640, 480)
+)
+
+# Get RGB data
+rgb_data = camera.get_rgb()
+
+# Get depth data
+depth_data = camera.get_depth()
+
+# Get pose information
+pose_data = camera.get_world_pose()
+```
+
+### Physics Optimization
+
+Isaac Sim uses PhysX for physics simulation, which can be optimized for different scenarios:
+
+- **Fixed Timestep**: Use fixed timesteps for deterministic simulation
+- **Substeps**: Increase substeps for more accurate physics
+- **Broadphase**: Optimize collision detection algorithms
+- **Sleeping Thresholds**: Configure object sleeping for performance
+
+## Week 10: GPU-Accelerated Simulation and Real-World Integration
+
+### Leveraging GPU Acceleration
+
+Isaac Sim takes advantage of NVIDIA GPUs for both rendering and physics simulation:
+
+1. **Rendering**: GPU-accelerated ray tracing and rasterization
+2. **Physics**: GPU-accelerated PhysX for parallel physics computation
+3. **AI**: Direct integration with NVIDIA AI frameworks (TensorRT, cuDNN)
+
+### Integration with ROS 2
+
+Isaac Sim provides bridges for integration with ROS 2:
+
+```python
+from omni.isaac.ros_bridge.scripts import ros_bridge_node
+
+# Example ROS 2 publisher in Isaac Sim
+import rclpy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+
+class IsaacROSPublisher:
+    def __init__(self):
+        rclpy.init()
+        self.node = rclpy.create_node('isaac_sim_publisher')
+        self.image_pub = self.node.create_publisher(Image, 'camera/image_raw', 10)
+        self.bridge = CvBridge()
+
+    def publish_image(self, image_data):
+        ros_image = self.bridge.cv2_to_imgmsg(image_data, "rgb8")
+        self.image_pub.publish(ros_image)
+```
+
+### Performance Optimization Strategies
+
+1. **Level of Detail (LOD)**: Use simplified models for distant objects
+2. **Occlusion Culling**: Hide objects not visible to cameras
+3. **Multi-resolution Simulation**: Simulate different parts of the world at different levels of detail
+4. **Batch Processing**: Process multiple simulation scenarios in parallel
+
+### Deployment Considerations
+
+When moving from Isaac Sim to real robots:
+
+1. **Sim-to-Real Gap**: Account for differences between simulation and reality
+2. **Sensor Calibration**: Ensure simulated sensors match real hardware
+3. **Physics Parameters**: Validate physical properties against real measurements
+4. **Control Latency**: Consider real-world control system delays
+
+## Isaac Sim Extensions
+
+Isaac Sim uses an extension system for adding custom functionality:
+
+```python
+# Example extension structure
+import omni.ext
+import omni.kit.ui
+
+class IsaacSimExtension(omni.ext.IExt):
+    def on_startup(self, ext_id):
+        print("[isaac.sim.extension] Isaac Sim Extension startup")
+
+    def on_shutdown(self):
+        print("[isaac.sim.extension] Isaac Sim Extension shutdown")
+```
+
+## Troubleshooting Common Issues
+
+### 1. Performance Issues
+**Issue**: Simulation running slowly
+**Solutions**:
+- Reduce scene complexity
+- Lower rendering resolution
+- Adjust physics substeps
+- Check GPU utilization and memory
+
+### 2. Import Issues
+**Issue**: Robots or objects not importing correctly
+**Solutions**:
+- Verify USD file validity
+- Check material and texture paths
+- Ensure proper joint configurations
+- Validate collision mesh formats
+
+### 3. Sensor Data Issues
+**Issue**: Sensors returning unexpected data
+**Solutions**:
+- Verify sensor configuration parameters
+- Check coordinate frame conventions
+- Validate sensor mounting positions
+- Ensure proper lighting conditions
+
+## Best Practices
+
+### 1. Progressive Complexity
+- Start with simple scenarios and gradually increase complexity
+- Validate each component individually before integration
+- Maintain a library of validated scenarios
+
+### 2. Documentation and Versioning
+- Document simulation parameters and configurations
+- Version control USD files and simulation scenes
+- Maintain logs of training and testing results
+
+### 3. Validation and Verification
+- Compare simulation results with analytical models when possible
+- Validate against real-world data when available
+- Implement unit tests for simulation components
+
+## Hands-on Exercise
+
+1. Install Isaac Sim and verify system compatibility
+2. Import a simple robot model into Isaac Sim
+3. Create a basic environment with obstacles
+4. Implement domain randomization for lighting and object textures
+5. Set up a camera sensor and collect synthetic RGB and depth data
+6. Implement a simple navigation task in simulation
+7. Document the simulation parameters and performance characteristics

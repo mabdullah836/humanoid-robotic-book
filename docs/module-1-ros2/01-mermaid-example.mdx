@@ -1,0 +1,92 @@
+---
+title: Mermaid Diagram Example
+slug: /module-1-ros2/01-mermaid-example
+sidebar_position: 2
+---
+
+# Mermaid Diagram Example - ROS 2 Architecture
+
+## ROS 2 System Architecture Diagram
+
+Here's an example of a Mermaid diagram showing the ROS 2 architecture:
+
+```mermaid
+graph TD
+    A[ROS 2 System] --> B[Nodes]
+    B --> B1[Node 1]
+    B --> B2[Node 2]
+    B --> B3[Node N]
+
+    B1 --> C1[Topics]
+    B2 --> C1
+    B3 --> C1
+
+    C1 --> D1[Publishers]
+    C1 --> D2[Subscribers]
+
+    B1 --> E1[Services]
+    B2 --> E1
+    B3 --> E1
+
+    E1 --> F1[Clients]
+    E1 --> F2[Servers]
+
+    B1 --> G1[Actions]
+    B2 --> G1
+    B3 --> G1
+
+    G1 --> H1[Action Clients]
+    G1 --> H2[Action Servers]
+
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C1 fill:#e8f5e8
+    style E1 fill:#fff3e0
+    style G1 fill:#fce4ec
+```
+
+## Communication Patterns in ROS 2
+
+The following diagram shows the different communication patterns available in ROS 2:
+
+```mermaid
+graph LR
+    subgraph "Communication Patterns"
+        A[Topics<br/>Pub/Sub] --> B[Publishers]
+        A --> C[Subscribers]
+
+        D[Services<br/>Request/Reply] --> E[Clients]
+        D --> F[Servers]
+
+        G[Actions<br/>Goal/Result/Feedback] --> H[Action Clients]
+        G --> I[Action Servers]
+    end
+```
+
+## Simple Robot Control Architecture
+
+This diagram illustrates a simple robot control architecture using ROS 2:
+
+```mermaid
+graph LR
+    subgraph "Robot System"
+        A[Sensors<br/>Camera, IMU, etc.] --> B[Perception Node]
+        B --> C[Planning Node]
+        C --> D[Control Node]
+        D --> E[Actuators<br/>Motors, etc.]
+
+        F[User Interface] --> C
+        G[Navigation] --> C
+    end
+```
+
+## Understanding Mermaid Diagrams
+
+Mermaid diagrams allow us to visualize complex systems and relationships in our robotics applications. They are particularly useful for:
+
+1. **System Architecture**: Showing how different ROS 2 nodes communicate
+2. **Workflow Visualization**: Illustrating the flow of data and control
+3. **State Machines**: Representing robot behaviors and transitions
+4. **Network Topology**: Displaying how different components are connected
+
+These diagrams can be embedded directly in your documentation to help others understand your robotic systems better.

@@ -1,0 +1,286 @@
+---
+title: Module 2 - Gazebo and Unity Simulation
+slug: /module-2-gazebo-unity
+sidebar_position: 4
+---
+
+# Module 2: Gazebo and Unity Simulation (Weeks 6-7)
+
+## Overview
+
+This module explores simulation environments crucial for humanoid robotics development. You'll learn to create realistic physics simulations using Gazebo and Unity, essential for testing and validating robot behaviors before deployment on physical hardware.
+
+## Learning Objectives
+
+By the end of this module, you will be able to:
+- Set up and configure Gazebo simulation environments
+- Model robots and environments with realistic physics properties
+- Integrate sensors and actuators in simulation environments
+- Use Unity for advanced 3D robotics simulation and visualization
+- Compare and evaluate different simulation platforms for specific use cases
+- Implement sensor simulation and realistic environment modeling
+
+## Module Structure
+
+### Week 6: Gazebo Physics Simulation
+- Gazebo architecture and physics engine fundamentals
+- Robot model import and simulation setup
+- Sensor integration (cameras, lidar, IMU, etc.)
+- Environment modeling and world creation
+- Simulation parameters and optimization
+
+### Week 7: Unity Robotics Tools
+- Unity Hub and Unity Robotics setup
+- URDF importer and robot visualization
+- 3D environment creation and lighting
+- Cross-platform simulation considerations
+- Integration with ROS 2 via ROS TCP Connector
+
+## Week 6: Gazebo Physics Simulation
+
+### Introduction to Gazebo
+
+Gazebo is a 3D simulation environment for robotics that provides realistic physics simulation, high-quality graphics, and convenient programmatic interfaces. It's widely used in robotics research and development for testing algorithms, robot designs, and control strategies.
+
+### Key Features of Gazebo
+
+1. **Physics Simulation**: Accurate simulation of rigid body dynamics, contact simulation, and multiple physics engines
+2. **Sensor Simulation**: Support for various sensors including cameras, lidar, IMU, GPS, and force/torque sensors
+3. **Graphics**: High-quality rendering with OGRE graphics engine
+4. **Plugins**: Extensible architecture through plugins for custom sensors, controllers, and world elements
+5. **ROS Integration**: Seamless integration with ROS and ROS 2 through gazebo_ros_pkgs
+
+### Installing and Setting Up Gazebo
+
+```bash
+# Install Gazebo Garden (latest stable version)
+sudo apt update
+sudo apt install gazebo
+# Or for specific ROS 2 distribution integration:
+sudo apt install ros-humble-gazebo-ros-pkgs
+```
+
+### Basic Gazebo Concepts
+
+- **Worlds**: Environment files that define the simulated environment, including models, lighting, and physics properties
+- **Models**: 3D representations of objects in the simulation, defined in SDF (Simulation Description Format)
+- **Plugins**: Custom code that extends Gazebo functionality, such as sensor drivers or controllers
+- **SDF**: Simulation Description Format, an XML-based format for describing simulation environments
+
+### Creating Your First Gazebo World
+
+```xml
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <world name="simple_world">
+    <!-- Include a default ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Include a default light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- Define a simple box model -->
+    <model name="box">
+      <pose>0 0 0.5 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.083</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>0.083</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.083</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.0 1.0 1.0</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.0 1.0 1.0</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+  </world>
+</sdf>
+```
+
+### Robot Model Integration
+
+To simulate a robot in Gazebo, you typically start with a URDF model and add Gazebo-specific tags for physics, sensors, and plugins:
+
+```xml
+<!-- In your URDF file -->
+<gazebo>
+  <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+    <left_joint>left_wheel_joint</left_joint>
+    <right_joint>right_wheel_joint</right_joint>
+    <wheel_separation>0.3</wheel_separation>
+    <wheel_diameter>0.15</wheel_diameter>
+  </plugin>
+</gazebo>
+```
+
+### Sensor Integration in Gazebo
+
+Gazebo supports various sensors that can be integrated into robot models:
+
+```xml
+<!-- Camera sensor example -->
+<gazebo reference="camera_link">
+  <sensor type="camera" name="camera_sensor">
+    <update_rate>30.0</update_rate>
+    <camera name="head">
+      <horizontal_fov>1.3962634</horizontal_fov>
+      <image>
+        <width>800</width>
+        <height>600</height>
+        <format>R8G8B8</format>
+      </image>
+      <clip>
+        <near>0.1</near>
+        <far>100</far>
+      </clip>
+    </camera>
+    <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+      <frame_name>camera_optical_frame</frame_name>
+    </plugin>
+  </sensor>
+</gazebo>
+```
+
+## Week 7: Unity Robotics Tools
+
+### Introduction to Unity for Robotics
+
+Unity is a powerful 3D development platform that has gained significant traction in robotics for creating high-fidelity simulations, visualization tools, and human-robot interaction interfaces. The Unity Robotics Hub provides specialized tools for robotics simulation and development.
+
+### Unity Robotics Setup
+
+1. Install Unity Hub from the Unity website
+2. Install Unity 2022.3 LTS or later
+3. Install the Unity Robotics Hub package
+4. Import the Unity ROS TCP Connector
+
+### Unity Robotics Packages
+
+- **Unity Robotics Hub**: Centralized package management for robotics tools
+- **URDF Importer**: Import robot models from URDF files
+- **ROS TCP Connector**: Communication bridge between Unity and ROS/ROS 2
+- **Simulation Tools**: Environment creation and physics simulation tools
+
+### Using the URDF Importer
+
+The URDF Importer allows you to import robot models directly from URDF files into Unity:
+
+1. Import the URDF Importer package via Unity Package Manager
+2. Create a new URDF asset in your project
+3. Specify the path to your URDF file and associated meshes
+4. Configure joint limits and visual properties
+5. Import the robot model into your scene
+
+### ROS Communication in Unity
+
+Unity communicates with ROS/ROS 2 through the ROS TCP Connector, which allows for message passing between Unity and the ROS ecosystem:
+
+```csharp
+using Unity.Robotics.ROSTCPConnector;
+
+public class RobotController : MonoBehaviour
+{
+    ROSConnection ros;
+
+    void Start()
+    {
+        ros = ROSConnection.instance;
+    }
+
+    void Update()
+    {
+        // Send messages to ROS
+        ros.SendUnityMessage("robot_command", new RobotCommand());
+    }
+}
+```
+
+### Comparison: Gazebo vs Unity for Robotics Simulation
+
+| Aspect | Gazebo | Unity |
+|--------|--------|-------|
+| Physics Accuracy | High (ODE, Bullet, DART) | Good (PhysX) |
+| Graphics Quality | Good | Excellent |
+| Sensor Simulation | Comprehensive | Growing support |
+| Learning Curve | Moderate | Steeper (C# required) |
+| Community | Large robotics community | Large game development community |
+| Performance | Optimized for robotics | Optimized for graphics |
+| Cost | Free | Free tier available, paid for commercial use |
+
+## Best Practices for Simulation
+
+### 1. Model Fidelity vs Performance
+- Balance model complexity with simulation performance
+- Use simplified models for fast testing, detailed models for final validation
+- Implement level-of-detail (LOD) systems where appropriate
+
+### 2. Sensor Simulation
+- Match simulated sensor properties to real hardware specifications
+- Include realistic noise models and limitations
+- Validate sensor simulation against real-world data when possible
+
+### 3. Environment Design
+- Create diverse environments that challenge robot capabilities
+- Include edge cases and failure scenarios
+- Document environment parameters for reproducibility
+
+### 4. Validation
+- Compare simulation results with real-world data when possible
+- Use simulation as a pre-deployment testing step, not a replacement for real testing
+- Document the limitations and assumptions of your simulation
+
+## Troubleshooting Common Issues
+
+### 1. Performance Issues in Gazebo
+**Issue**: Simulation running slowly
+**Solutions**:
+- Reduce visual complexity
+- Adjust physics update rates
+- Simplify collision meshes
+- Close unnecessary GUI components
+
+### 2. URDF Import Issues in Unity
+**Issue**: Robot model not importing correctly
+**Solutions**:
+- Check URDF syntax and validity
+- Ensure mesh files are accessible
+- Verify joint types are supported
+- Check for naming conflicts
+
+### 3. Sensor Noise and Accuracy
+**Issue**: Sensors behaving unrealistically
+**Solutions**:
+- Adjust noise parameters to match real sensors
+- Verify sensor mounting positions
+- Check sensor ranges and field of view
+
+## Hands-on Exercise
+
+1. Create a simple robot model in URDF with at least 3 joints
+2. Import the robot into both Gazebo and Unity
+3. Create a simple world/environment in each simulator
+4. Add at least one sensor (camera or lidar) to your robot
+5. Implement basic movement control for the robot in simulation
+6. Compare the simulation results between Gazebo and Unity
+7. Document the differences in physics behavior, graphics quality, and ease of use

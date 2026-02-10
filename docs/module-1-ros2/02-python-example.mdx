@@ -1,0 +1,145 @@
+---
+title: Python Code Example
+slug: /module-1-ros2/02-python-example
+sidebar_position: 3
+---
+
+# Python Code Example - ROS 2 Robot Controller
+
+## Simple ROS 2 Publisher Node
+
+Here's an example of a simple ROS 2 publisher node that publishes messages to a topic:
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+class MinimalPublisher(Node):
+    def __init__(self):
+        super().__init__('minimal_publisher')
+        self.publisher_ = self.create_publisher(String, 'topic', 10)
+        timer_period = 0.5  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.i = 0
+
+    def timer_callback(self):
+        msg = String()
+        msg.data = 'Hello World: %d' % self.i
+        self.publisher_.publish(msg)
+        self.get_logger().info('Publishing: "%s"' % msg.data)
+        self.i += 1
+
+def main(args=None):
+    rclpy.init(args=args)
+    minimal_publisher = MinimalPublisher()
+    rclpy.spin(minimal_publisher)
+    minimal_publisher.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+## Simple ROS 2 Subscriber Node
+
+Here's an example of a simple ROS 2 subscriber node that listens to messages from a topic:
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+class MinimalSubscriber(Node):
+    def __init__(self):
+        super().__init__('minimal_subscriber')
+        self.subscription = self.create_subscription(
+            String,
+            'topic',
+            self.listener_callback,
+            10)
+        self.subscription  # prevent unused variable warning
+
+    def listener_callback(self, msg):
+        self.get_logger().info('I heard: "%s"' % msg.data)
+
+def main(args=None):
+    rclpy.init(args=args)
+    minimal_subscriber = MinimalSubscriber()
+    rclpy.spin(minimal_subscriber)
+    minimal_subscriber.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+## Robot Arm Controller Example
+
+Here's a more complex example of a robot arm controller that uses ROS 2 services:
+
+```python
+import rclpy
+from rclpy.action import ActionClient
+from rclpy.node import Node
+
+# Assuming we have imported the appropriate action messages
+# from my_robot_msgs.action import MoveArm
+
+class RobotArmController(Node):
+    def __init__(self):
+        super().__init__('robot_arm_controller')
+        self._action_client = ActionClient(
+            self,
+            MoveArm,
+            'move_arm')
+
+    def send_goal(self, target_pose):
+        goal_msg = MoveArm.Goal()
+        goal_msg.target_pose = target_pose
+
+        self._action_client.wait_for_server()
+        return self._action_client.send_goal_async(goal_msg)
+
+    def goal_response_callback(self, future):
+        goal_handle = future.result()
+        if not goal_handle.accepted:
+            self.get_logger().info('Goal rejected :(')
+            return
+
+        self.get_logger().info('Goal accepted :)')
+        self._get_result_future = goal_handle.get_result_async()
+        self._get_result_future.add_done_callback(self.get_result_callback)
+
+    def get_result_callback(self, future):
+        result = future.result().result
+        self.get_logger().info('Result: {0}'.format(result.success))
+
+def main(args=None):
+    rclpy.init(args=args)
+    robot_arm_controller = RobotArmController()
+
+    # Example target pose
+    target = [0.5, 0.0, 0.3]  # x, y, z position
+
+    future = robot_arm_controller.send_goal(target)
+    future.add_done_callback(robot_arm_controller.goal_response_callback)
+
+    rclpy.spin(robot_arm_controller)
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+## Understanding the Code Examples
+
+These Python code examples demonstrate key concepts in ROS 2:
+
+1. **Node Creation**: All ROS 2 programs start by creating a node that inherits from `rclpy.node.Node`
+2. **Initialization**: The `rclpy.init()` function initializes the ROS 2 client library
+3. **Publishers and Subscribers**: Communication between nodes happens through topics
+4. **Actions**: For long-running tasks that provide feedback during execution
+5. **Logging**: The `get_logger()` method provides standardized logging capabilities
+
+These examples are conceptual and would need appropriate message/service definitions and dependencies to run in a real ROS 2 environment.
