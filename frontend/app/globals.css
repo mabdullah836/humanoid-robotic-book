@@ -1,0 +1,391 @@
+@import "tailwindcss";
+
+/* ============================================
+   Theme CSS Custom Properties
+   ============================================ */
+
+:root {
+  /* Primary – gold/amber (#cba14e) */
+  --color-primary: #cba14e;
+  --color-primary-dark: #a67c32;
+  --color-primary-light: #d4b15e;
+
+  /* Secondary – darker gold */
+  --color-secondary: #b08d3e;
+  --color-secondary-dark: #96702a;
+  --color-secondary-light: #cba14e;
+
+  /* Accent – success / positive actions */
+  --color-accent: #059669;
+  --color-accent-dark: #047857;
+  --color-accent-light: #10b981;
+
+  /* Light theme */
+  --background: #fafafa;
+  --background-secondary: #f4f4f5;
+  --background-tertiary: #e4e4e7;
+  --background-elevated: #ffffff;
+  --foreground: #18181b;
+  --foreground-secondary: #52525b;
+  --foreground-muted: #71717a;
+  --border-color: #e4e4e7;
+  --hover-bg: rgba(0, 0, 0, 0.04);
+  --hover-border: #d4d4d8;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-fab: 0 8px 24px rgba(203, 161, 78, 0.35);
+
+  /* Gradients – gold */
+  --gradient-primary: linear-gradient(135deg, #a67c32 0%, #cba14e 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #96702a 0%, #b08d3e 100%);
+
+  --text-on-primary: #ffffff;
+  --navbar-height: 64px;
+  color-scheme: light;
+}
+
+/* Dark theme – gold primary */
+.dark,
+:root.dark {
+  --background: #09090b;
+  --background-secondary: #18181b;
+  --background-tertiary: #27272a;
+  --background-elevated: #1f1f23;
+  --foreground: #fafafa;
+  --foreground-secondary: #a1a1aa;
+  --foreground-muted: #71717a;
+  --border-color: #27272a;
+  --hover-bg: rgba(255, 255, 255, 0.06);
+  --hover-border: #3f3f46;
+
+  /* Primary – same gold, slightly brighter for dark backgrounds */
+  --color-primary: #d4b15e;
+  --color-primary-dark: #cba14e;
+  --color-primary-light: #ddbc6a;
+  --color-secondary: #cba14e;
+  --color-secondary-dark: #b08d3e;
+  --color-secondary-light: #d4b15e;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.35), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+  --shadow-fab: 0 8px 24px rgba(203, 161, 78, 0.4);
+
+  --gradient-primary: linear-gradient(135deg, #b08d3e 0%, #d4b15e 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #a67c32 0%, #cba14e 100%);
+
+  --text-on-primary: #ffffff;
+  color-scheme: dark;
+}
+
+:root[data-color-scheme="dark"] {
+  --background: #09090b;
+  --background-secondary: #18181b;
+  --background-tertiary: #27272a;
+  --background-elevated: #1f1f23;
+  --foreground: #fafafa;
+  --foreground-secondary: #a1a1aa;
+  --foreground-muted: #71717a;
+  --border-color: #27272a;
+  --hover-bg: rgba(255, 255, 255, 0.06);
+  --hover-border: #3f3f46;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-color-scheme="light"]) {
+    --background: #09090b;
+    --background-secondary: #18181b;
+    --background-tertiary: #27272a;
+    --background-elevated: #1f1f23;
+    --foreground: #fafafa;
+    --foreground-secondary: #a1a1aa;
+    --foreground-muted: #71717a;
+    --border-color: #27272a;
+    --hover-bg: rgba(255, 255, 255, 0.06);
+    --hover-border: #3f3f46;
+    color-scheme: dark;
+  }
+}
+
+/* ============================================
+   Tailwind Theme Integration
+   ============================================ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-background-tertiary: var(--background-tertiary);
+  --color-background-elevated: var(--background-elevated);
+  --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-border: var(--border-color);
+  --color-hover-bg: var(--hover-bg);
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-text-on-primary: var(--text-on-primary);
+  --font-sans: "Inter", "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   Form Input Placeholder Styles
+   ============================================ */
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--foreground-muted);
+  opacity: 1;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: var(--foreground-muted);
+  opacity: 1;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: var(--foreground-muted);
+  opacity: 1;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: var(--foreground-muted);
+  opacity: 1;
+}
+
+/* ============================================
+   Theme Transition Effects
+   ============================================ */
+
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0ms;
+}
+
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition-duration: 300ms !important;
+  transition-timing-function: ease-in-out !important;
+}
+
+/* ============================================
+   Component Utilities
+   ============================================ */
+
+/* Hover utilities */
+.hover-bg {
+  background-color: var(--hover-bg) !important;
+}
+
+.hover-text {
+  color: var(--foreground) !important;
+}
+
+.hover-border {
+  border-color: var(--hover-border) !important;
+}
+
+.hover-opacity {
+  opacity: 0.8 !important;
+}
+
+.hover-scale {
+  transform: scale(1.02) !important;
+  transition: transform 0.2s ease-in-out !important;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient background with hover */
+.bg-gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.bg-gradient-primary:hover {
+  background: var(--gradient-primary-hover);
+}
+
+/* FAB pulse animation */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(203, 161, 78, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(203, 161, 78, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(203, 161, 78, 0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
+/* Typing indicator animation */
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-dot {
+  animation: typing-dot 1.4s infinite;
+}
+
+.animate-typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.animate-typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Slide up animation for modals */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Fade in animation for scroll effects */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--foreground-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground-secondary);
+}
+
+/* ============================================
+   Dark Mode Hover States
+   ============================================ */
+
+.dark button:not([disabled]):hover,
+.dark a:not([disabled]):hover {
+  transition: all 0.15s ease-in-out;
+}
+
+.dark .hover-highlight:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--hover-border);
+}
+
+/* ============================================
+   Message Bubble Styles
+   ============================================ */
+
+.message-user {
+  background: var(--gradient-primary);
+  color: var(--text-on-primary); /* Use theme-appropriate text color for contrast against gradient */
+  border-radius: 18px 18px 4px 18px;
+}
+
+.message-bot {
+  background: var(--background-secondary);
+  color: var(--foreground);
+  border-radius: 18px 18px 18px 4px;
+}
+
+/* ============================================
+   Iframe Container
+   ============================================ */
+
+.iframe-container {
+  height: calc(100vh - var(--navbar-height));
+  overflow: hidden;
+}
+
+.iframe-container iframe {
+  border: none;
+  outline: none;
+}
+
+
+@layer utilities {
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}

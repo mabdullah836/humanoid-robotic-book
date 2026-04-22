@@ -1,0 +1,50 @@
+{
+  "name": "openai-chatkit-starter-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@better-fetch/fetch": "^1.1.21",
+    "@neondatabase/serverless": "^1.0.2",
+    "@openai/chatkit-react": ">=1.1.1 <2.0.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "better-auth": "^1.4.7",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "drizzle-orm": "^0.41.0",
+    "framer-motion": "^12.23.26",
+    "lucide-react": "^0.561.0",
+    "next": "^15.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.5.0",
+    "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.8",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "jsdom": "^26.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^3.1.4"
+  }
+}
